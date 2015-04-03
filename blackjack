@@ -1,0 +1,170 @@
+#include<iostream>
+#include<cstdlib>
+#include<stdexcept>
+#include<string>
+#include<vector>
+#include<ctime> 
+using namespace std;
+
+string cards[4][13]; //the array to represent the cards in string
+float points[13];  // the array of the card value
+int is_dealt[4][13]; //the array recording cards dealt 
+float player_data[2];  //an array containing the player's game data 
+float computer_data[2]; //an array containing the computer's game data
+
+void initalize(); 
+vector<string> player;  //representing the cards of player in string
+vector<string> computer; //representing the computer's cards
+vector<string> dealing(vector<string> gamer, float data[2]); //the dealing process
+void show_cards(vector<string> gamer); //showing cards on the screen
+vector<string> player_round(vector<string> player); 
+vector<string> computer_round(vector<string> computer);
+void judgment();
+
+
+int main(){ 
+	initalize(); //initalize all the cards and points corresponding
+	string ans="y";
+	while(ans=="Y"||ans=="y"){  // games continues if player wants another game
+		for(int i=0;i<4;++i){
+			for(int j=0;j<13;++j) is_dealt[i][j]=0; //no card have been dealt
+		}
+		player.clear(); //player has got no cards
+		computer.clear();//computer has got no cards
+		player=player_round(player);//begin player's round
+		cout<<endl;
+		if(player_data[1]==0){  //if player's points has not reached over 21
+			computer=computer_round(computer); //the computer's round begins
+			if(computer_data[1]==0){ //if computer's points has not reached over 21
+				judgment();//judge who wins
+			}
+			cout<<endl;
+		}
+		while(1){
+			try{
+				cout<<"another game(y/n)?"<<endl;
+				getline(cin,ans);
+				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+				else break;
+			}
+			catch(exception a){
+				cout<<"the answer must be y/n!"<<endl;
+			}
+		}
+		cout<<endl;
+	}
+	return 0;
+}
+
+void initalize(){
+	srand(time(0));
+	string color[4]={"Hearts","Spades","Club","Diamond"};
+	char first='1';
+	for(int i=0;i<4;++i){
+		for(int j=1;j<9;++j){
+			char value=first+j;
+			cards[i][j]=color[i]+' '+value;
+		}
+		cards[i][0]=color[i]+' '+"A";
+		cards[i][9]=color[i]+' '+"10";
+		cards[i][10]=color[i]+' '+"J";
+		cards[i][11]=color[i]+' '+"Q";
+		cards[i][12]=color[i]+' '+"K";
+	}
+	for(int i=0;i<10;++i){
+		points[i]=i+1;
+	}
+	points[10]=points[11]=points[12]=0.5;
+}
+
+vector<string> dealing(vector<string> gamer, float data[2]){
+    int i=rand()%4,j=rand()%13;
+    while(is_dealt[i][j]!=0){i=rand()%4;j=rand()%13;} //to avoid dealing the card dealt
+    gamer.push_back(cards[i][j]);
+    is_dealt[i][j]=1;
+    data[0]+=points[j]; //add the gamer's points by the way
+    return gamer;
+}
+
+void show_cards(vector<string> gamer){
+    if(gamer.size()==1) cout<<gamer[0]<<endl;
+    else if(gamer.size()>1){
+        for(int i=0;i<gamer.size()-1;++i){
+            cout<<gamer[i]<<' ';
+        }
+        cout<<gamer[gamer.size()-1]<<endl;
+    }
+}
+
+vector<string> player_round(vector<string> player){
+	player_data[0]=player_data[1]=0; //the first component is total points, the second is to record whehter the total points reach over 21
+	cout<<"player's round"<<endl;
+	player=dealing(player,player_data);
+	player=dealing(player,player_data);
+	cout<<"player has the cards ";
+	show_cards(player);
+	
+	string ans;
+	while(1){
+		try{
+			cout<<"one more card?(y/n)"<<endl;
+			getline(cin,ans);
+			if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+			else break;
+		}
+		catch(exception a){
+			cout<<"the answer must be y/n!"<<endl;
+		}
+	}
+	while(ans=="Y"||ans=="y"){
+		player=dealing(player,player_data);
+		cout<<"one more card: ";
+	    show_cards(player);
+		if(player_data[0]>21){
+			player_data[1]=1;  //if total points reach over 21, record it and show the player loses
+			cout<<"player loses"<<endl;
+			break;
+		}
+	    while(1){
+			try{
+				cout<<"one more card?(y/n)"<<endl;
+				getline(cin,ans);
+				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+				else break;
+			}
+			catch(exception a){
+				cout<<"the answer must be y/n!"<<endl;
+			}
+		}
+	}
+	return player;
+}
+
+vector<string> computer_round(vector<string> computer){
+	computer_data[0]=computer_data[1]=0;
+	cout<<"computer's round"<<endl;
+	computer=dealing(computer,computer_data);
+	computer=dealing(computer,computer_data);
+	cout<<"player get the cards ";
+	show_cards(computer);
+	while(computer_data[0]<player_data[0]){  //computer's strategy
+		computer=dealing(computer,computer_data);
+		cout<<"one more card: ";
+		show_cards(computer);
+	}
+	if(computer_data[0]>21){
+		computer_data[1]=1;
+		cout<<"player wins"<<endl;
+	}
+	return computer;
+}
+
+void judgment(){  //the rules for judge who wins
+	if(computer_data[0]==player_data[0]){
+		if(computer.size()==player.size()) cout<<"decue"<<endl;
+		else if(computer.size()>player.size()) cout<<"player wins"<<endl;
+		else cout<<"player loses"<<endl;
+	}
+	else cout<<"player loses"<<endl;
+}
+
