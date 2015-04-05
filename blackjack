@@ -1,3 +1,5 @@
+//file:blackjack.cpp
+//a blackjack game
 #include<iostream>
 #include<cstdlib>
 #include<stdexcept>
@@ -44,11 +46,11 @@ int main(){
 			try{
 				cout<<"another game(y/n)?"<<endl;
 				getline(cin,ans);
-				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error("the answer must be y/n!"); 
 				else break;
 			}
 			catch(exception a){
-				cout<<"the answer must be y/n!"<<endl;
+				cout<<a.what()<<endl;
 			}
 		}
 		cout<<endl;
@@ -109,11 +111,11 @@ vector<string> player_round(vector<string> player){
 		try{
 			cout<<"one more card?(y/n)"<<endl;
 			getline(cin,ans);
-			if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+			if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error("the answer must be y/n!"); 
 			else break;
 		}
 		catch(exception a){
-			cout<<"the answer must be y/n!"<<endl;
+			cout<<a.what()<<endl;
 		}
 	}
 	while(ans=="Y"||ans=="y"){
@@ -129,11 +131,11 @@ vector<string> player_round(vector<string> player){
 			try{
 				cout<<"one more card?(y/n)"<<endl;
 				getline(cin,ans);
-				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error(""); 
+				if(ans!="Y"&&ans!="y"&&ans!="N"&&ans!="n") throw runtime_error("the answer must be y/n!"); 
 				else break;
 			}
 			catch(exception a){
-				cout<<"the answer must be y/n!"<<endl;
+				cout<<a.what()<<endl;
 			}
 		}
 	}
